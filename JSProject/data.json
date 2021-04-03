@@ -1,0 +1,262 @@
+[
+    {
+        "Fname": "person",
+        "Lname": "w",
+        "Address": "w",
+        "Mail": "ww@gmail.com",
+        "Age": "20",
+        "Type": "user",
+        "approvedbySub": "false",
+        "tokens": [
+            4,
+            0,
+            0,
+            0,
+            0
+        ],
+        "password": "",
+        "Attendance": {
+            "hour": [],
+            "day": [],
+            "month": [],
+            "year": [],
+            "state": []
+        },
+        "Late": {
+            "hour": [],
+            "day": [],
+            "month": [],
+            "year": [],
+            "state": []
+        },
+        "Absence": {
+            "hour": [],
+            "day": [],
+            "month": [],
+            "year": [],
+            "state": []
+        }
+    },
+    {
+        "Fname": "Sara",
+        "Lname": "Edrees",
+        "Address": "B14 Baker st",
+        "Mail": "saraenoch@gmail.com",
+        "Age": "25",
+        "Type": "SubAdmin",
+        "approvedbySub": "true",
+        "tokens": [
+            2,
+            0,
+            0,
+            0,
+            1
+        ],
+        "password": "PassWordSub",
+        "Attendance": {
+            "hour": [],
+            "day": [],
+            "month": [],
+            "year": [],
+            "state": []
+        },
+        "Late": {
+            "hour": [],
+            "day": [],
+            "month": [],
+            "year": [],
+            "state": []
+        },
+        "Absence": {
+            "hour": [],
+            "day": [],
+            "month": [],
+            "year": [],
+            "state": []
+        }
+    },
+    {
+        "Fname": "khalid",
+        "Lname": "saad",
+        "Address": "B15",
+        "Mail": "khalid@gmail.com",
+        "Age": "25",
+        "Type": "user",
+        "approvedbySub": "true",
+        "tokens": [
+            4,
+            3,
+            3,
+            4,
+            1
+        ],
+        "password": 7542133543,
+        "Attendance": {
+            "hour": [],
+            "day": [],
+            "month": [],
+            "year": [],
+            "state": []
+        },
+        "Late": {
+            "hour": [],
+            "day": [],
+            "month": [],
+            "year": [],
+            "state": []
+        },
+        "Absence": {
+            "hour": [
+                null,
+                0,
+                1,
+                1,
+                1
+            ],
+            "day": [
+                null,
+                8,
+                8,
+                8,
+                8
+            ],
+            "month": [
+                null,
+                0,
+                0,
+                0,
+                0
+            ],
+            "year": [
+                null,
+                2021,
+                2021,
+                2021,
+                2021
+            ],
+            "state": [
+                null,
+                "Absent",
+                "Absent",
+                "Absent",
+                "Absent"
+            ]
+        }
+    },
+    {
+        "Fname": "Mohamed",
+        "Lname": "Edrees",
+        "Address": "B15",
+        "Mail": "medoenoch@gmail.com",
+        "Age": "25",
+        "Type": "admin",
+        "approvedbySub": "true",
+        "tokens": [
+            1,
+            3,
+            3,
+            4,
+            1
+        ],
+        "password": 75421335543,
+        "Attendance": {
+            "hour": [],
+            "day": [],
+            "month": [],
+            "year": [],
+            "state": []
+        },
+        "Late": {
+            "hour": [],
+            "day": [],
+            "month": [],
+            "year": [],
+            "state": []
+        },
+        "Absence": {
+            "hour": [
+                null,
+                0,
+                1,
+                1,
+                1
+            ],
+            "day": [
+                null,
+                8,
+                8,
+                8,
+                8
+            ],
+            "month": [
+                null,
+                0,
+                0,
+                0,
+                0
+            ],
+            "year": [
+                null,
+                2021,
+                2021,
+                2021,
+                2021
+            ],
+            "state": [
+                null,
+                "Absent",
+                "Absent",
+                "Absent",
+                "Absent"
+            ]
+        }
+    },
+    {
+        "Fname": "walid",
+        "Lname": "saad",
+        "Address": "B15",
+        "Mail": "walid@gmail.com",
+        "Age": "25",
+        "Type": "user",
+        "approvedbySub": "false",
+        "tokens": [
+            5,
+            0,
+            0,
+            0,
+            0
+        ],
+        "password": 754213388543,
+        "Attendance": {
+            "hour": [],
+            "day": [],
+            "month": [],
+            "year": [],
+            "state": []
+        },
+        "Late": {
+            "hour": [],
+            "day": [],
+            "month": [],
+            "year": [],
+            "state": []
+        },
+        "Absence": {
+            "hour": [
+             
+            ],
+            "day": [
+             
+            ],
+            "month": [
+            
+            ],
+            "year": [
+             
+            ],
+            "state": [
+              
+            ]
+        }
+    }
+]

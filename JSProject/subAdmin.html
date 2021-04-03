@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>Employee Report</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <link href="c/bootstrap.css" rel="stylesheet">
+  <link href="c/bootstrap.css.map" rel="stylesheet">
+  <link href="css\font-awesome.css" rel="stylesheet" />
+  <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
+  <style>
+    #idConfirmation {
+      background-color: #4e8d7c;
+      color: white;
+      font-weight: bold;
+    }
+  </style>
+  <script>
+
+    $(document).on('ready', function () {
+      let txtUserName = $("#txtUserName");
+      retriveAllEmps();
+      $("#idConfirmation").on('click', () => {
+        if ($("#txtUserName").val().length == 0) {
+
+          alert('empty ..?');
+        } else {
+          empData.forEach(e => {
+            if (txtUserName.val() == e.Fname + " " + e.Lname) {
+              e.approvedbySub = "true";
+              e.tokens[4] = 1;
+            }
+          });
+          save(empData);
+
+        }
+
+
+      });
+
+
+    });
+
+    save = (obj) => {
+      var str = JSON.stringify(obj);
+      var bl = new Blob([str], { type: 'application/octet-stream' });
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(bl);
+      a.download = "\data.json";
+      a.pathname = true;
+      a.hidden = true;
+      document.body.appendChild(a);
+      a.click();
+    }
+
+    let empData = [];
+    retriveAllEmps = () => {
+      let Mail = $("#mail");
+      let name = $("#name");
+      let time = $("#time");
+      let employees = $('#Employees');
+
+      return $.ajax({
+        url: "http://127.0.0.1:5500/JSProject/data.json",
+        success: x => {
+          empData = x,
+            console.table(empData),
+            empData.forEach(element => {
+              if (element.tokens[0] == 2) {
+                console.log(element.tokens);
+                Mail.append(element.Mail);
+                name.append(element.Fname + " " + element.Lname);
+                time.append(element.Type);
+              }
+              if (element.tokens[4] == 0) {
+                employees.append(`<tr><td>${element.Fname + " " + element.Lname}</td><tr>`);
+              }
+            });
+
+        },
+        error: z => { console.log("TryAgain") }
+      });
+    }
+
+
+  </script>
+</head>
+
+<body>
+  <section class='container col-lg-12 col-md-10 col-sm-8 col-12'>
+    <div
+      class="container table text-center text-info table-bordered fa-border fa-2x d-inline-flex col-lg-12 col-md-10 col-sm-8 col-12 ">
+      <div class='fa fa-user-circle fa-2x text-primary col-lg-3 col-md-2 '></div>
+      <div id="mail" class=" text-dark font-weight-bold col-lg-3 col-md-2 text-truncate "> </div>
+      <div id='name' class="text-primary font-weight-bold col-lg-3 col-md-4 text-truncate"></div>
+      <div id='time' class=" text-success font-weight-bold col-lg-3 col-md-2 text-truncate"></div>
+    </div>
+    <div>
+      <table id="Employees" class='table table-bordered col-lg-12 col-md-10 col-sm-8 col-12 '>
+
+      </table>
+    </div>
+    <div class='container text-center  table-bordered fa-2x  d-inline-flex col-lg-12 col-md-10 col-sm-8 col-12 '>
+      <div>
+        <label class="form-text text-info fa fa-user fa-3x pl-5 col-lg-4 col-md-4"></label>
+      </div>
+      <form id="confirm" class="col-lg-8 col-md-8 col-sm-8  text-center text-truncate">
+        <div class="container  col-8 text-center  pt-5">
+          <div id="employeeName" class="text-center d-flex input-group text-truncate ">
+            <input type="text" class="form-control rounded border-secondary" id="txtUserName"
+              aria-describedby="emailHelp" placeholder="Enter Employee Code">
+          </div>
+          <button id="idConfirmation" type="submit" class="btn mt-1 ">Confirm</button>
+        </div>
+      </form>
+    </div>
+  </section>
+  
+
+  <script src="js/JQuery-3.3.1.min.js"></script>
+  <script src="js/popper.js"></script>
+  <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
+</body>
+
+</html>

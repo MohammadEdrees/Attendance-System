@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>Home Page</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <link href="css/bootstrap.css" rel="stylesheet">
+  <link href="css\font-awesome.css" rel="stylesheet" />
+  <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
+  <style>
+    #btnRegister {
+      background-color: #045762;
+      font-weight: bold;
+    }
+
+    #btnSubmit {
+      background-color: #f3f2da;
+      font-weight: bold;
+    }
+
+    body {
+      background-image: url("3.jpg");
+    }
+
+    label {
+      margin-left: 8px;
+      color: #111d5e;
+      font-weight: bold;
+    }
+  </style>
+  <script>
+    window.onload = function load() {
+      SelectAll();
+
+
+
+    };//end of load
+   
+    //calculate late 
+    calculateLate = (usermail, _users ) => {
+      let absent = 1 ,intime = 1, late = 1,  monthC = 1,c=0;
+      let Hrs = [], Mins = [], Secns = [];
+      let date = new Date();
+      console.log(date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + ":" + date.getDate().toLocaleString());
+      Hrs[c] = date.getHours().toLocaleString();
+      Mins[c] = date.getMinutes().toLocaleString();
+      Secns[c] = date.getSeconds().toLocaleString();
+      //month in ml seconds: 2,592,000,000 day :86,400,000
+      _users.forEach(element => {
+        if (usermail == element.Mail) {
+          
+          //intime
+          if (Hrs[0] == 15 && Mins[0] < 15) {
+            console.log(Mins[0] + ':' + Hrs[0]);
+            element.tokens[1]+= intime;
+            element.Absence.hour[element.tokens[1]]=date.getHours();
+            element.Absence.day[element.tokens[1]]=date.getDate();
+            element.Absence.month[element.tokens[1]]=date.getMonth();
+            element.Absence.year[element.tokens[1]]=date.getFullYear();
+            element.Absence.state[element.tokens[1]]="InTime";
+
+
+            //counter in json
+            //late 
+          } else if (Hrs[0] == 15 && Mins[0] < 30) {
+            console.log("Late");
+            element.tokens[2]+= late;
+            element.Absence.hour[element.tokens[2]]=date.getHours();
+            element.Absence.day[element.tokens[2]]=date.getDate();
+            element.Absence.month[element.tokens[2]]=date.getMonth();
+            element.Absence.year[element.tokens[2]]=date.getFullYear();
+            element.Absence.state[element.tokens[2]]="Late";
+
+            
+
+            //counter
+            //absebt
+          } else {
+            console.log("Absent");
+            element.tokens[3]+= absent;
+            element.Absence.hour[element.tokens[3]]=date.getHours();
+            element.Absence.day[element.tokens[3]]=date.getDate();
+            element.Absence.month[element.tokens[3]]=date.getMonth();
+            element.Absence.year[element.tokens[3]]=date.getFullYear();
+            element.Absence.state[element.tokens[3]]="Absent";
+            //counter
+          }
+          console.log(date.getDate().toLocaleString());//day
+          console.log(date.getMonth());//Month from 0 to 11
+          console.log(date.getFullYear());//FullYear
+        } else {
+          console.log(date.getDate().toLocaleString());
+          
+
+        }
+      });//Loop End
+      download(_users);
+      console.log(_users);
+
+
+
+    }
+    // i need to store those days every month
+
+
+    arrayOfdata = [];
+    function registerActions() {
+      //move to registeration page
+      window.open("http://127.0.0.1:5500/JSProject/registration.html", "_self");
+    }
+    function submitActions() {
+      //login(){Admin-SubAdmin-User}
+      let email = $("#email").val();
+      let password = $("#password").val();
+      //validation needed
+      arrayOfdata.forEach(element => {
+        let tokens = element.tokens;
+        if (email == element.Mail && password == element.password) {
+          //used local storage
+          localStorage.setItem("tokens", tokens);
+          let state = [];
+          state = element.tokens;
+          console.log(state);
+          var authentication = element.Type;
+          console.log(authentication);
+          calculateLate(email, arrayOfdata);
+         
+          //status of admin
+          if (state[0] == 1 )
+            window.open("http://127.0.0.1:5500/JSProject/Admin.html", "_self");
+          //status of Sadmin
+          if (state[0] == 2)
+            window.open("http://127.0.0.1:5500/JSProject/subAdmin.html", "_self");
+          //status of users
+          if (authentication == "user") {
+            if (state[0] == 4) {
+              console.log("+");
+              window.open("http://127.0.0.1:5500/JSProject/norMalUser.html","_self"); 
+            }
+            if (state[0] == 5) {
+              console.log("!approved");
+              alert("Wait for approve ");
+              //clear text
+
+            }
+          }
+
+        }
+
+      });
+    }
+
+    function SelectAll() {
+      return $.ajax({
+        url: "http://127.0.0.1:5500/JSProject/data.json",
+        success: x => {
+          arrayOfdata = x,
+            console.table(arrayOfdata)
+        },
+        error: z => { console.log("TryAgain") }
+      });
+    }
+
+    function download(obj) {
+      var str = JSON.stringify(obj);
+      var blob = new Blob([str], {
+        type: 'application/octet-stream'
+      });
+      var url = URL.createObjectURL(blob);
+      var link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'data.json');
+      var event = document.createEvent('MouseEvents');
+      event.initMouseEvent('click', true, true, window, 1, 0, 0, 0, 0,
+        false, true, false, false, 0, null);
+      link.dispatchEvent(event);
+
+    }
+      //read file
+      //spread rules admin sub admin user 
+      //add to array
+      //
+  </script>
+</head>
+
+<body>
+  <div class="container col-lg-12 col-md-8 col-sm-6 col-3 flex-wrap ">
+  </div>
+  <div id="Cont" class="container col-12 mt-5 ">
+    <div class="container-fluid col-6">
+      <form class=" col-12">
+        <div class="mb-3">
+          <label for="email" class=" fa fa-2x d-lg-block d-md-block d-sm-block ">Email address</label>
+          <input type="email" class="form-control d-lg-block d-md-block d-sm-block " id="email" required>
+
+        </div>
+
+        <div class="mb-3">
+          <p for="password" class="  fa fa-2x d-lg-block d-md-block d-sm-block ">Password</p>
+          <input type="password" class="form-control d-lg-block d-md-block d-sm-block " id="password" required>
+        </div>
+
+
+
+        <div class="justify-content-center   d-flex ">
+          <button id="btnSubmit" type="submit" class="btn d-lg-block d-md-block d-sm-block "
+            onclick="submitActions();">Submit</button>
+          <button id="btnRegister" type="submit" class="btn offset-9 text-white flex-wrap d-md-block  d-none"
+            onclick="registerActions();">Register</button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+  </div>
+  <script src="js/JQuery-3.3.1.min.js"></script>
+  <script src="js/popper.js"></script>
+  <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
+</body>
+
+</html>

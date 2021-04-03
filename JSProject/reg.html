@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <meta name="description" content="">
+  <link href="c/bootstrap.css" rel="stylesheet" />
+  <link href="c/bootstrap.css.map" rel="stylesheet" />
+  <link href="css\font-awesome.css" rel="stylesheet" />
+  <script src="js/JQuery-3.3.1.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      background-image: url("54.jpg");
+    }
+
+    label {
+      margin-left: 8px;
+      color: #111d5e;
+      font-weight: bold;
+    }
+
+    #bg {
+      background-color: teal;
+      opacity: .8;
+
+    }
+
+    input[type=text] {
+      background-color: #f3f2da;
+    }
+
+    #title {
+      color: #ffffff;
+      background-color: teal;
+      opacity: .8;
+    }
+  </style>
+  <script>
+    var arrayOfEmployees = [];
+    let date = new Date();
+    let count = 0;
+    $(document).ready(() => {
+      retrive();
+      $('#regData').on('click', () => {
+        console.log();
+        if ($("#txtFirstName").val().length === 0 || $("#txtLastName").val().length === 0 || $("#Address").val().length === 0 || $("#Mail").val().length === 0 || $("#age").val().length === 0) {
+          alert("complete data plz..");
+        } else {
+          regData();
+        }
+
+      });
+      $('#login').on('click',()=>{
+      window.open("http://127.0.0.1:5500/JSProject/loginPage.html", "_self");
+      });
+    });
+    //get data
+    retrive = () => {
+      return $.ajax({
+        url: "http://127.0.0.1:5500/JSProject/data.json",
+        success: x => {
+          arrayOfEmployees = x,
+            console.log(arrayOfEmployees)
+        },
+        error: z => { console.log("TryAgain") }
+      });
+    }
+    //save file
+    save = (obj) => {
+      var str = JSON.stringify(obj);
+      var bl = new Blob([str], { type: 'application/octet-stream' });
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(bl);
+      a.download = "\data.json";
+      a.pathname = true;
+      a.hidden = true;
+      document.body.appendChild(a);
+      a.click();
+    }
+    //EmoConsFun
+    function Emplpyee(fname, lname, address, mail, age, type, time, tokens, password, Attendance, Late, Absence) {
+      this.Fname = fname,
+      this.Lname = lname,
+      this.Address = address,
+      this.Mail = mail,
+      this.Age = age,
+      this.Type = type
+      this.time = time;
+      this.tokens = tokens;
+      this.password = password;
+      this.Attendance = Attendance;
+      this.Late = Late;
+      this.Absence = Absence;
+
+    }
+    //download after saving 
+    function addToArray(Fname, Lname, Address, Mail, Age, Type, c, time, tokens, password, Attendance, Late, Absence) {
+      arrayOfEmployees[c] = new Emplpyee(Fname, Lname, Address, Mail, Age, Type, time, tokens, password, Attendance, Late, Absence);
+      //path
+      //download(arrayOfEmployees);
+      save(arrayOfEmployees);
+    }
+    //clearFields
+    function clear() {
+      $("#txtFirstName").val(" ");
+      $("#txtLastName").val(" ");
+      $("#Address").val(" ");
+      $("#Mail").val(" ");
+      $("#age").val(" ");
+    }
+    //regAllData
+    function regData() {
+      let Type = "user",
+        Fname = $("#txtFirstName").val(),
+        Lname = $("#txtLastName").val(),
+        Address = $("#Address").val(),
+        Mail = $("#Mail").val(),
+        Age = $("#age").val(),
+        time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds(),
+        tokens = [5, 0, 0, 0, 0],
+        password = 'default',
+        Attendance = [], Late = [], Absence = [];
+      Attendance = {
+        "hour": [],
+        "day": [],
+        "month": [],
+        "year": [],
+        "state": []
+      }
+        , Late = {
+          "hour": [],
+          "day": [],
+          "month": [],
+          "year": [],
+          "state": []
+        }
+        , Absence = {
+          "hour": [],
+          "day": [],
+          "month": [],
+          "year": [],
+          "state": []
+        };
+      addToArray(Fname, Lname, Address, Mail, Age, Type, count, time, tokens, password, Attendance, Late, Absence);
+      count++;
+
+    }
+  </script>
+</head>
+
+<body>
+
+  <section class="container col-lg-6 col-md-12 col-sm-11 col-10 mb-3">
+    <div id="title"
+      class="container text-center font-weight-bold fa-3x rounded p-1 mt-5  col-lg-12 col-md-8 col-sm-8 col-12 ">
+      <p class="text-truncate">Registration Form</p>
+    </div>
+
+    <div id="bg" class="container container-fluid mt-4 rounded  col-lg-12 col-md-8 col-sm-8 col-12 text-truncate ">
+      <form class=" m-1 " required>
+        <div class="col-md-12 mt-2 form-row  ">
+          <label for="txtFirstName">FirstName</label>
+          <input id="txtFirstName" type="text" class="form-control text-truncate " placeholder="Mohamed" required>
+        </div>
+        <div class="col-md-12 mt-2 ">
+          <label for="txtLastName">LastName</label>
+          <input id="txtLastName" type="text" class="form-control text-truncate" placeholder="Hassan" required>
+        </div>
+        <div class="col-12">
+          <label for="Address" class=" mt-2">Address</label>
+          <input type="text" class="form-control text-truncate" id="Address" placeholder="1234 Main St" required>
+        </div>
+        <div class="col-12">
+          <label for="Mail" class=" mt-2 ">E-Mail</label>
+          <input type="text" class="form-control text-truncate" id="Mail" placeholder="example@.com" required>
+        </div>
+        <div class="col-12">
+          <label for="age" class=" mt-2">Age</label>
+          <input type="text" class="form-control text-truncate" id="age" placeholder="20 years old" required>
+        </div>
+        <div id="buttonsContainer " class="col-12 d-flex  ">
+          <div class=" col-3 col-md-8 col-lg-4   text-left ">
+            <button type="submit" id='regData' class="btn btn-primary mt-4 mb-2 font-weight-bold ">Sign
+              in</button>
+          </div>
+          <div class=" col-6 d-md-none d-lg-block col-lg-4 text-center">
+            <label type="text" class=" text-warning mt-4 mb-2 fa fa-2x font-weight-bold d-lg-block  d-none">OR</label>
+          </div>
+          <div class="col-3  col-md-4 mr-4 col-lg-4  text-right ">
+            <button type="submit" id='login' class="btn btn-success mt-4 font-weight-bold ">Log
+              in</button>
+          </div>
+        </div>
+
+      </form>
+
+  </section>
+  </div>
+
+  <script src="js/JQuery-3.3.1.min.js"></script>
+  <script src="js/popper.js"></script>
+  <script src="j/bootstrap.js"></script>
+
+
+  <script src="" async defer></script>
+</body>
+
+</html>

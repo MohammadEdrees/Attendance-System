@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Admin Page</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css\font-awesome.css" rel="stylesheet" />
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
+    <style>
+        body {
+            background-image: url("2.jpg");
+        }
+
+        table {
+            font-weight: bold;
+            font-size: medium;
+            color: wheat;
+
+        }
+
+        .thead {
+            font-weight: bold;
+            font-size: medium;
+            color: Red;
+            vertical-align: middle;
+
+        }
+
+        .row {
+            width: 100%;
+        }
+
+
+
+        button {
+            background-color: tomato;
+            border-radius: 5px;
+            font-weight: bold;
+
+
+        }
+
+        #employeeData:hover {
+            background-color: green;
+
+        }
+
+        #head {
+            height: 80px;
+            opacity: .8;
+        }
+    </style>
+    <script>
+        let flagEmps = 0, flagWeekR = 0, flagMonR = 0, flagNew = 0, flagLate = 0, flagx = 0;
+        onload = () => {
+            empData = [];
+            console.log(retriveAllEmps());
+            const tableOfEmp = document.getElementById("tableOfEmp"),
+                reportsTbl = document.getElementById("reportsTbl");
+            btnEmpData = document.getElementById("employeeData");
+            FullReport = document.getElementById("FullReport");
+            LateR = document.getElementById("LateR"),
+                newTbl = $("#newUsers"),
+                excTbl = $("#excTbl");
+            let tokens = localStorage.getItem("tokens");
+            let newUserstbl = $("#newUsers");
+            let tblLate = $("#latTbl");
+            btnEmpData.addEventListener('click', () => {
+
+                tableOfEmp.setAttribute("class", " d-block table table-responsive table-borderless  text-center mt-2");
+                reportsTbl.setAttribute("class", " d-none");
+                newUserstbl.hide();
+                tblLate.hide();
+                excTbl.hide();
+                if (flagEmps == 1)
+                    return;
+                createHeaderOfTbl();
+                transferDataToTbl();
+
+            });
+            FullReport.addEventListener('click', () => {
+                reportsTbl.setAttribute("class", " d-block  table table-responsive table-borderless text-center mt-2");
+                tableOfEmp.setAttribute("class", " d-none");
+                newUserstbl.hide();
+                tblLate.hide();
+                excTbl.hide()
+                if (flagWeekR == 1)
+                    return;
+                createReportHead();
+                getFullReport();
+
+            });
+            LateR.addEventListener('click', () => {
+                reportsTbl.setAttribute("class", " d-none ");
+                //  tableOfEmp.setAttribute("class", " d-none");
+                newTbl.hide();
+                excTbl.hide();
+                tblLate.attr("class", "table table-responsive table-borderless  text-center mt-5");
+                tblLate.show();
+                if (flagLate != 1) {
+                    empData.forEach(e => {
+                        tblLate.append(`<tr><td>${e.Fname + e.Lname}</td><td>${e.tokens[2]}</td></tr>`);
+                    })
+                }
+
+                flagLate = 1;
+
+
+
+
+            });
+
+            $("#Excuse").on('click', () => {
+                reportsTbl.setAttribute("class", " d-none");
+                tableOfEmp.setAttribute("class", " d-none");
+                tblLate.hide();
+                newUserstbl.hide();
+                excTbl.attr("class", "table table-responsive table-borderless  text-center mt-5");
+                excTbl.show();
+
+                if (flagx != 1) {
+                    empData.forEach(e => {
+                        excTbl.append(`<tr><td>${e.Fname + e.Lname}</td><td>${e.tokens[3]}</td></tr>`);
+                    })
+                }
+
+                flagx = 1;
+
+
+            });
+
+            $("#needApprove").on('click', () => {
+                reportsTbl.setAttribute("class", " d-none");
+                tableOfEmp.setAttribute("class", " d-none");
+                tblLate.hide();
+                excTbl.hide();
+
+                needToApprove();
+            })
+
+
+            //new registered employees
+            needToApprove = () => {
+                let newUserstbl = $("#newUsers");
+                newUserstbl.show();
+                //no repeat
+                if (flagNew != 1) {
+                    Approve = `<td class='x' ><button id='approvBtn'  class='  btn btn-success'>Approve</button></td>`;
+                    Refuse = ` <td class='y'><button id='refuseBtn' class='btn btn-danger'>Refuse</button></td>`;
+                    newUserstbl.attr("class", " table table-responsive table-borderless  text-center mt-5 ");
+                    let btnz = document.getElementsByTagName('button');
+                    t = [], mails = [];
+                    let choise;
+                    let mail;
+                    c = 0;
+                    //create new Employees table
+                    empData.forEach(element => {
+                        if (element.tokens[0] == 5) {
+                            Email = `<tr>
+                            <td class='w-50'><b>E-mail:<b></td>
+                            <td class='w-50'>${element.Mail}</td>
+                            <td>
+                            <input id='approveCheck' type="checkbox"/>    
+                            </td>
+                            </tr>`;
+                            Fullname = `<tr>
+                            <td class='w-50'><b>Name:<b></td>
+                            <td class='w-50'>${element.Fname + " " + element.Lname}</td> 
+                            </tr>`;
+                            newUserstbl.append(Email);
+                            newUserstbl.append(Fullname);
+                            t = element.tokens;
+                        }
+                        flagNew = 1;
+                    });
+                    //buttons
+                    newUserstbl.append(Approve);
+                    newUserstbl.append(Refuse);
+                    //delegation
+
+                    $(newUserstbl.children()[0].children).on('change', 'input:checkbox', function () {
+                        if ($(this).prop('checked') == true) {
+                            choise = true;
+                            mail = $(this).parent().siblings()[1].innerText;
+                            console.log(mail);
+                        } else {
+                            choise = false;
+                        }
+                        mails[c] = mail;
+                        c++;
+                    });
+
+
+                    //Approve new employee
+                    newUserstbl.children('td.x').children().on('click', () => {
+
+                        if (choise == true) {
+                            approveNewEmp(mails, empData);
+                        } else {
+                            alert('choose At least one Employee');
+                        }
+                    });
+                    //refuse new Employee
+                    newUserstbl.children('td.y').children().on('click', () => {
+                        if (choise == true) {
+                            dismissNewEmp(mails, empData);
+                        } else {
+                            alert('choose At least one Employee');
+                        }
+                    });
+                    //MailTo button 
+                    newUserstbl.children('td.z').children().on('click', () => {
+                        console.log('sendMail');
+                        //check mail => send to 
+                        //send to all 
+                    });
+                }
+
+
+            }
+            //mail to new user
+            //EndOfload;
+        }
+
+        //put data in table 
+        transferDataToTbl = () => {
+            empData.forEach(element => {
+                if (element.tokens[0] == 4) {
+                    let redata = tableOfEmp.insertRow(),
+                        cellFnames = redata.insertCell().innerHTML = element.Fname;
+                    cellLastnames = redata.insertCell().innerHTML = element.Lname;
+                    cellAddress = redata.insertCell().innerHTML = element.Address;
+                    cellMail = redata.insertCell().innerHTML = element.Mail;
+                    cellAge = redata.insertCell().innerHTML = element.Age;
+                    cellType = redata.insertCell().innerHTML = element.Type;
+                    cellTime = redata.insertCell().innerHTML = element.tokens[1],
+                        cellTime = redata.insertCell().innerHTML = element.tokens[3],
+                        cellTime = redata.insertCell().innerHTML = element.tokens[2];
+
+
+                }
+            });
+            flagEmps = 1;
+        }
+      
+        //header of table function
+        createHeaderOfTbl = () => {
+            const rowbase = tableOfEmp.insertRow(),
+                fname = rowbase.insertCell().innerHTML = "FirstName",
+                lname = rowbase.insertCell().innerHTML = "SecondName",
+                address = rowbase.insertCell().innerHTML = "Address",
+                Email = rowbase.insertCell().innerHTML = "E-Mail",
+                Age = rowbase.insertCell().innerHTML = "Age",
+                type = rowbase.insertCell().innerHTML = "Job",
+                attendaceTime = rowbase.insertCell().innerHTML = "Attendance",
+                Absc = rowbase.insertCell().innerHTML = "Absence",
+                Late = rowbase.insertCell().innerHTML = "Late";
+
+
+            rowbase.setAttribute("class", " thead");
+        }
+        //head for report
+        createReportHead = () => {
+            const head = reportsTbl.insertRow(),
+                name = head.insertCell().innerHTML = "FullName",
+                address = head.insertCell().innerHTML = "Address",
+                Email = head.insertCell().innerHTML = "Mail",
+                type = head.insertCell().innerHTML = "Type";
+            Attend = head.insertCell().innerHTML = "Attend";
+            Absence = head.insertCell().innerHTML = "Absence";
+            Late = head.insertCell().innerHTML = "Late";
+
+
+
+
+            head.setAttribute("class", " thead");
+
+
+
+        }
+        // report
+        getFullReport = () => {
+            empData.forEach(element => {
+                if (element.Type == "user") {
+                    let redata = reportsTbl.insertRow(),
+                        cellFnames = redata.insertCell().innerHTML = element.Fname + element.Lname;
+                    cellTime = redata.insertCell().innerHTML = element.Address;
+                    Mail = redata.insertCell().innerHTML = element.Mail;
+                    type = redata.insertCell().innerHTML = element.Type;
+                    Attend = redata.insertCell().innerHTML = element.tokens[1];
+                    Abs = redata.insertCell().innerHTML = element.tokens[3];
+                    Late = redata.insertCell().innerHTML = element.tokens[2];
+
+
+                }
+            });
+            flagWeekR = 1;
+            flagMonR = 1;
+
+        }
+        //getAllEmps
+        retriveAllEmps = () => {
+
+            return $.ajax({
+                url: "http://127.0.0.1:5500/JSProject/data.json",
+                success: x => {
+                    empData = x,
+                        console.table(empData)
+                },
+                error: z => { console.log("TryAgain") }
+            });
+        }
+        //approve Function
+        approveNewEmp = (_mails, employees) => {
+            employees.forEach(element => {
+                _mails.forEach(e => {
+                    if (element.Mail == e) {
+                        element.tokens = [4, 0, 0, 0, 0];
+                        element.password = parseInt(Math.random() * 10000000000);
+                    }
+                });
+            });
+
+            download(employees);
+        }
+        //declice Function
+        dismissNewEmp = (_mails, employees) => {
+            employees.forEach(element => {
+                _mails.forEach(e => {
+                    if (element.Mail == e) {
+                        element.tokens = [6, 0];//6 Means to be deleted
+                    }
+                });
+            })
+            download(employees);
+
+        }
+        //download function
+        function download(obj) {
+            var str = JSON.stringify(obj);
+            var blob = new Blob([str], {
+                type: 'application/octet-stream'
+            });
+            var url = URL.createObjectURL(blob);
+            var link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'data.json');
+            var event = document.createEvent('MouseEvents');
+            event.initMouseEvent('click', true, true, window, 1, 0, 0, 0, 0,
+                false, true, false, false, 0, null);
+            link.dispatchEvent(event);
+
+        }
+
+
+    </script>
+</head>
+
+<body>
+    <section id="head" class=" container  col-lg-12 col-md-12 col-sm-8 col-6  text-center d-inline-flex">
+
+        <button id="employeeData" class="btn btn-outline-success  col-lg-3 col-md-3 col-sm-3 col-3 text-truncate   "
+            style="height:inherit; background-color: lightcoral;  border-radius:0; border:0; margin-right: 5px; font-weight: bold; color: white;">Employees</button>
+        <button id="FullReport" class="btn btn-outline-danger  col-lg-3  col-md-2 col-3 text-truncate"
+            style="height:inherit; background-color: lightblue;   border-radius:0; border:0;font-weight: bold; color: white; ">FullReport</button>
+        <button id="LateR" class="btn btn-outline-warning col-lg-3  col-md-2 col-sm-3 col-3 text-truncate"
+            style="height:inherit;  background-color: blueviolet; border-radius:0; border:0;  margin-left: 5px; font-weight: bold; color: white;">LateReport</button>
+        <button id="Excuse" class="btn btn-outline-warning col-lg-3  col-md-4 col-md-3 col-3 text-truncate"
+            style="height:inherit;  background-color: blueviolet; border-radius:0; border:0;  margin-left: 5px; font-weight: bold; color: white;">
+            Excuse </button>
+        <button id="needApprove" class="btn btn-outline-warning col-lg-3  col-md-4 col-md-3 col-3 text-truncate"
+            style="height:inherit;  background-color: blueviolet; border-radius:0; border:0;  margin-left: 5px; font-weight: bold; color: white;">
+            Need Approve </button>
+
+    </section>
+    <div class="container  text-center  ">
+        <table id="tableOfEmp">
+        </table>
+    </div>
+
+    <section class="container  text-center  ">
+        <table id="reportsTbl">
+        </table>
+    </section>
+    <section class="container  text-center  ">
+        <table id="latTbl">
+        </table>
+    </section>
+    <section class="container  text-center  ">
+        <table id="excTbl">
+        </table>
+    </section>
+
+    <section class="container  text-center  ">
+        <table id="newUsers">
+        </table>
+    </section>
+
+    <script src="js/JQuery-3.3.1.min.js"></script>
+    <script src="js/popper.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
+</body>
+
+</html>

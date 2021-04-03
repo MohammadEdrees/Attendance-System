@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Employee Report</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="c/bootstrap.css.map" rel="stylesheet">
+    <link href="css\font-awesome.css" rel="stylesheet" />
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
+    <style>
+        body {
+            background-image: url("54.jpg ");
+
+        }
+
+        #tableOfData {
+            background-image: url("3.jpg");
+            border-radius: 5px;
+
+        }
+
+        .a {
+            text-align: left;
+            margin: 3px;
+
+        }
+
+        .b {
+            text-align: left;
+            margin: 3px;
+
+
+
+        }
+        .th{
+            text-align: center;
+        }
+    </style>
+
+    <script>
+        onload = () => {
+            empData = [];
+            retriveAllEmps();
+            let details = $("#tableOfData");
+
+        }
+        retriveAllEmps = () => {
+            let details = $("#tableOfData");
+            let detailsdaily = $("#tableOfDatadaily");
+
+            let tokens = localStorage.getItem("tokens");
+            return $.ajax({
+                url: "http://127.0.0.1:5500/JSProject/data.json",
+                success: x => {
+                    empData = x,
+                        // console.table(empData[0].Fname + empData[0].Lname),
+                        empData.forEach(element => {
+                            if (tokens[0]==element.tokens[0]&& element.tokens[4]==1) {
+                                FullName = `<tr>
+                            <td  class='a'><b>Full Name:<b></td>
+                            <td class='a' colspan='3'>${element.Fname + element.Lname}</td>
+                            </tr>`;
+                                Attendence = `<tr>
+                            <td class='a'><b>Attendence:<b></td>
+                            <td class='b'>${element.tokens[1]}</td>    
+                            </tr>`; 
+                                Late = `<tr>
+                            <td class='a'><b>Late:<b></td>
+                            <td class='b'>${element.tokens[2]}</td>    
+                            </tr>`;
+                                Abscence = `<tr>
+                            <td class='a'><b>Abscence:<b></td>
+                            <td class='b'>${element.tokens[3]}</td>    
+                            </tr>`;
+                            
+                                details.append(FullName);
+                                details.append(Attendence);
+                                details.append(Late);
+                                details.append(Abscence);
+                                details.attr("class", " table table-responsive table-primary table-borderless    text-center mt-2 ");
+                                
+            
+
+                            }
+                        
+
+                        });
+
+
+
+
+                },
+                error: z => { console.log("TryAgain") }
+            });
+        }
+    </script>
+</head>
+
+<body>
+ 
+    <div class='container d-inline-flex'>
+        <div class="container ">
+            <table id="tableOfData" class="table ">
+                <th  id="head">Monthly Reaport</th>
+            </table>
+    
+        </div>
+    
+    </div>
+    <div class='container d-inline-flex'>
+        <div class="container ">
+            <table id="tableOfDatadaily" class="table ">
+               <!-- <th  id="head">Daily Reaport</th> -->
+            </table>
+    
+        </div>
+    
+    </div>
+
+
+    <script src="js/JQuery-3.3.1.min.js"></script>
+    <script src="js/popper.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
+</body>
+
+</html>
